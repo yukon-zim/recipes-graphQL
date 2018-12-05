@@ -1,0 +1,24 @@
+scalar DateTime
+
+type Recipe {
+    id: ID!
+    name: String!
+    category: String
+    numberOfServings: String
+    ingredients: [String!]!
+    instructions: [String!]!
+    dateCreated: DateTime!
+    dateModified: DateTime
+    notes: String
+}
+
+type Query {
+    recipes: [Recipe!]!
+    recipe(id: ID!): Recipe
+}
+
+type Mutation {
+    addRecipe(name: String!, category: String, numberOfServings: String, ingredients: [String!]!, instructions: [String!]!, notes: String): Recipe!
+    editRecipe(id: ID!, name: String!, category: String, numberOfServings: String, ingredients: [String!]!, instructions: [String!]!, notes: String): Recipe!
+    deleteRecipe(id: ID!): Recipe
+}
