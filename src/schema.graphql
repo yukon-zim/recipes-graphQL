@@ -13,7 +13,7 @@ type Recipe {
 }
 
 type Query {
-    recipes: [Recipe!]!
+    recipes(searchTerm: String): [Recipe]!
     recipe(id: ID!): Recipe
 }
 
