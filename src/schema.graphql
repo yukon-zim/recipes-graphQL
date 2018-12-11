@@ -12,6 +12,10 @@ type Recipe {
     notes: String
 }
 
+type SuccessMessage {
+    message: String
+}
+
 type Query {
     recipes(searchTerm: String): [Recipe]!
     recipe(id: ID!): Recipe
@@ -20,5 +24,5 @@ type Query {
 type Mutation {
     addRecipe(name: String!, category: String, numberOfServings: String, ingredients: [String!]!, instructions: [String!]!, notes: String): Recipe!
     editRecipe(id: ID!, name: String!, category: String, numberOfServings: String, ingredients: [String!]!, instructions: [String!]!, notes: String): Recipe!
-    deleteRecipe(id: ID!): Recipe
+    deleteRecipe(id: ID!): SuccessMessage
 }

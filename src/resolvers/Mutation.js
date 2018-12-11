@@ -33,7 +33,11 @@ const Mutation = {
         const response = await fetch(`http://localhost:1337/recipes/${args.id}`, {
             method: 'DELETE'
         });
-        return response.json();
+        const jsonData = await response.json();
+        if (response.ok) {
+            return { message: jsonData.message };
+        }
+        throw new Error(jsonData.message);
     }
 };
 
