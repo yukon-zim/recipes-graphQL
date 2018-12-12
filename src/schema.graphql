@@ -12,6 +12,15 @@ type Recipe {
     notes: String
 }
 
+type User {
+    id: ID!
+    name: String!
+    email: String!
+#    todo: in the WB course, he uses the Permission type in datamodel.prisma.
+#    is string our best option or is there a similar way to limit possible values?
+    permissions: [String!]!
+}
+
 type SuccessMessage {
     message: String
 }
@@ -19,10 +28,12 @@ type SuccessMessage {
 type Query {
     recipes(searchTerm: String): [Recipe]!
     recipe(id: ID!): Recipe
+    whoAmI: User
 }
 
 type Mutation {
     addRecipe(name: String!, category: String, numberOfServings: String, ingredients: [String!]!, instructions: [String!]!, notes: String): Recipe!
     editRecipe(id: ID!, name: String!, category: String, numberOfServings: String, ingredients: [String!]!, instructions: [String!]!, notes: String): Recipe!
     deleteRecipe(id: ID!): SuccessMessage
+    createUser(email: String!, password: String!, name: String!): User!
 }
