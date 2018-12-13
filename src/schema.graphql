@@ -16,8 +16,6 @@ type User {
     id: ID!
     name: String!
     email: String!
-#    todo: in the WB course, he uses the Permission type in datamodel.prisma.
-#    is string our best option or is there a similar way to limit possible values?
     superuser: Boolean!
 }
 
@@ -39,4 +37,6 @@ type Mutation {
     editRecipe(id: ID!, name: String!, category: String, numberOfServings: String, ingredients: [String!]!, instructions: [String!]!, notes: String): Recipe!
     deleteRecipe(id: ID!): SuccessMessage
     createUser(email: String!, password: String!, name: String!): User!
+    signin(email: String!, password: String!): User!
+    signout: SuccessMessage
 }
