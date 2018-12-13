@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const { handleResponse } = require('../helpers/ErrorHandler');
 
 const baseUrl = 'http://localhost:1337';
 // public-facing resolvers for getting data.  each query here must also be exposed to UI in schema.graphql
@@ -9,30 +10,33 @@ const Query = {
             recipes = await fetch(`${baseUrl}/recipes`);
         }
         recipes = await fetch(`${baseUrl}/recipes?searchTerm=${args.searchTerm}`);
-        // console.log(recipes);
-        return recipes.json();
+        return handleResponse(recipes);
     },
     recipe: async (parent, args) => {
         const recipe = await fetch(`${baseUrl}/recipes/${args.id}`);
-        return recipe.json();
+        return handleResponse(recipe);
     },
     users: async (parent, args) => {
         const users = await fetch(`${baseUrl}/users`);
-        return users.json();
+        return handleResponse(users);
     },
-    user: async (parent, args) => {
+    userById: async (parent, args) => {
         const user = await fetch(`${baseUrl}/users/${args.id}`);
-        return user.json();
+        return handleResponse(user);
+    },
+    userByEmail: async (parent, args) => {
+        const user = await fetch(`${baseUrl}/users/email/email?email=${args.email}`);
+        return handleResponse(user);
     },
     whoAmI: async (parent, args, ctx) => {
         // check if there is a current userId
-        // todo: do i even have access to ctx? this comes from the frontend, right?
-        if (!ctx.request.id) {
+        // access to ctx is provided where graphQL server is instantiated (index.js)
+        if (!ctx.request.userId) {
             console.log('no user logged in');
             return null;
         }
-        const currentUser = await fetch(`${baseUrl}/users/${ctx.request.id}`);
-        return currentUser;
+        const currentUser = await fetch(`${baseUrl}/users/${ctx.request.userId}`);
+        return handleResponse(currentUser);
 }
 };
 

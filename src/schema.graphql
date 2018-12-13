@@ -18,7 +18,7 @@ type User {
     email: String!
 #    todo: in the WB course, he uses the Permission type in datamodel.prisma.
 #    is string our best option or is there a similar way to limit possible values?
-    permissions: [String!]!
+    superuser: Boolean!
 }
 
 type SuccessMessage {
@@ -28,6 +28,9 @@ type SuccessMessage {
 type Query {
     recipes(searchTerm: String): [Recipe]!
     recipe(id: ID!): Recipe
+    users: [User]!
+    userById(id: ID!): User
+    userByEmail(email: String!): User
     whoAmI: User
 }
 

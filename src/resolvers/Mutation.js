@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { handleResponse } = require('../helpers/ErrorHandler');
 
 // public-facing resolvers for getting data.  each mutation here must also be exposed to UI in schema.graphql
 const Mutation = {
@@ -9,11 +10,7 @@ const Mutation = {
             method: 'POST',
             body:  JSON.stringify(args)
         });
-        const jsonData = await response.json();
-        if (response.ok) {
-            return jsonData;
-        }
-        throw new Error(jsonData.message);
+        return handleResponse(response);
     },
     editRecipe: async (parent, args) => {
         // make a copy of the recipe's updates
@@ -25,23 +22,15 @@ const Mutation = {
             method: 'PUT',
             body:  JSON.stringify(updates)
         });
-        const jsonData = await response.json();
-        if (response.ok) {
-            return jsonData;
-        }
-        throw new Error(jsonData.message);
+        return handleResponse(response);
     },
     deleteRecipe: async (parent, args) => {
         const response = await fetch(`http://localhost:1337/recipes/${args.id}`, {
             method: 'DELETE'
         });
-        const jsonData = await response.json();
-        if (response.ok) {
-            return { message: jsonData.message };
-        }
-        throw new Error(jsonData.message);
+        return handleResponse(response);
     },
-    createUser: async (parent, args) => {
+    createUser: async (parent, args, ctx) => {
         args.email = args.email.toLowerCase();
         // hash their PW
         const password = await bcrypt.hash(args.password, 10);
@@ -49,18 +38,23 @@ const Mutation = {
         const newUser = {
             ...args,
             password,
-            permissions: ['USER']
+            superuser: false
         };
         // create user in db
         const response = await fetch(`http://localhost:1337/users`, {
             method: 'POST',
             body:  JSON.stringify(newUser)
         });
-        const jsonData = await response.json();
-        if (response.ok) {
-            return jsonData;
-        }
-        throw new Error(jsonData.message);
+        const user = await handleResponse(response);
+        // create user's jwt
+        const token = jwt.sign({userId: user.id}, process.env.APP_SECRET);
+        // set the jwt as a cookie on response
+
+        ctx.response.cookie('token', token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24, //1 day cookie
+        });
+        return user;
     }
 };
 
