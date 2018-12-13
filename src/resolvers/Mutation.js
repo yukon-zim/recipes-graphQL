@@ -31,6 +31,15 @@ const Mutation = {
         });
         return handleResponse(response);
     },
+
+    async importRecipeFromUrl(parent, {url}) {
+        const response = await fetch(`${baseUrl}/recipes/import-url`, {
+            method: 'POST',
+            body: JSON.stringify({url})
+        });
+        return handleResponse(response)
+    },
+
     async createUser(parent, args, ctx) {
         // make sure they entered an email
         if(!args.email) {
