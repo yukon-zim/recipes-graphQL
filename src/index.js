@@ -2,12 +2,13 @@ const { GraphQLServer } = require('graphql-yoga');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 require('dotenv').config({ path: 'variables.env' });
-const Mutation = require('./resolvers/Mutation');
+const RecipeMutation = require('./resolvers/RecipeMutation');
+const UserMutation = require('./resolvers/UserMutation');
 const Query = require('./resolvers/Query');
 
 const resolvers = {
     Query,
-    Mutation
+    Mutation: {...RecipeMutation, ...UserMutation}
 };
 
 const server = new GraphQLServer({

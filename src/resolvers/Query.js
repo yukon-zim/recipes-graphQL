@@ -1,31 +1,30 @@
 const fetch = require('node-fetch');
 const { handleResponse } = require('../helpers/ErrorHandler');
 
-const baseUrl = 'http://localhost:1337';
 // public-facing resolvers for getting data.  each query here must also be exposed to UI in schema.graphql
 const Query = {
     recipes: async (parent, args) => {
         let recipes;
         if (!args.searchTerm) {
-            recipes = await fetch(`${baseUrl}/recipes`);
+            recipes = await fetch(`${process.env.BASE_URL}/recipes`);
         }
-        recipes = await fetch(`${baseUrl}/recipes?searchTerm=${args.searchTerm}`);
+        recipes = await fetch(`${process.env.BASE_URL}/recipes?searchTerm=${args.searchTerm}`);
         return handleResponse(recipes);
     },
     recipe: async (parent, args) => {
-        const recipe = await fetch(`${baseUrl}/recipes/${args.id}`);
+        const recipe = await fetch(`${process.env.BASE_URL}/recipes/${args.id}`);
         return handleResponse(recipe);
     },
     users: async (parent, args) => {
-        const users = await fetch(`${baseUrl}/users`);
+        const users = await fetch(`${process.env.BASE_URL}/users`);
         return handleResponse(users);
     },
     userById: async (parent, args) => {
-        const user = await fetch(`${baseUrl}/users/${args.id}`);
+        const user = await fetch(`${process.env.BASE_URL}/users/${args.id}`);
         return handleResponse(user);
     },
     userByEmail: async (parent, args) => {
-        const user = await fetch(`${baseUrl}/users/email/email?email=${args.email}`);
+        const user = await fetch(`${process.env.BASE_URL}/users/email/email?email=${args.email}`);
         return handleResponse(user);
     },
     whoAmI: async (parent, args, ctx) => {
@@ -35,7 +34,7 @@ const Query = {
             console.log('no user logged in');
             return null;
         }
-        const currentUser = await fetch(`${baseUrl}/users/${ctx.request.userId}`);
+        const currentUser = await fetch(`${process.env.BASE_URL}/users/${ctx.request.userId}`);
         return handleResponse(currentUser);
 }
 };
