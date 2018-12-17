@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { handleResponse } = require('../helpers/ErrorHandler');
+const { handleResponse } = require('../helpers/ResponseHandler');
 
 // public-facing resolvers for getting data.  each mutation here must also be exposed to UI in schema.graphql
 const RecipeMutation = {

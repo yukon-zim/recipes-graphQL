@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const { handleResponse } = require('../helpers/ErrorHandler');
+const { handleResponse } = require('../helpers/ResponseHandler');
 
 // public-facing resolvers for getting data.  each query here must also be exposed to UI in schema.graphql
 const Query = {
