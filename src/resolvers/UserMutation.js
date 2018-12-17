@@ -5,6 +5,7 @@ const { randomBytes } = require('crypto');
 const { promisify } = require('util');
 const { handleResponse } = require('../helpers/ResponseHandler');
 const { setCookie } = require('../helpers/SetCookie');
+const { transport, makeANiceEmail } = require('../mail');
 
 // public-facing resolvers for getting user data.  each mutation here must also be exposed to UI in schema.graphql
 const UserMutation = {
@@ -59,7 +60,6 @@ const UserMutation = {
         const token = jwt.sign({userId: user.id}, process.env.APP_SECRET);
         // set the jwt as a cookie on response
         setCookie(ctx, token, (1000 * 60 * 60 * 24)); //1 day cookie
-        // 5. return user
         return user;
     },
     async signout(parent, args, ctx) {
@@ -82,13 +82,24 @@ const UserMutation = {
             method: 'PUT',
             body:  JSON.stringify(userUpdate)
         });
-        console.log(updateResponse);
+        // 3. email them that reset token
+        const mailRes = await transport.sendMail({
+            from: "recipe_app@recipe.com",
+            to: user.email,
+            subject: 'Your PW reset link',
+            html: makeANiceEmail(`Here is your pw reset link! 
+            <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}
+            ">CLICK HERE TO RESET</a>`)
+        });
         return {message: "success"};
     },
     async resetPassword(parent, args, ctx) {
-        // 1. check if PWs match
+        // 1. PW match and length check
         if (args.password !== args.confirmPassword) {
             throw new Error('passwords must match');
+        }
+        if (args.password.length < 6) {
+            throw new Error(`PW should be at least 6 characters`);
         }
         // 2. check if it's a legit reset token and check if it's expired (API call does both)
         const getUserResponse = await fetch(`${process.env.BASE_URL}/users/reset/${args.resetToken}`);
@@ -96,21 +107,20 @@ const UserMutation = {
         if(!user) {
             throw new Error(`No user found for this reset token. Try requesting another PW reset.`);
         }
-        // 4. hash new PW
+        // 3. hash new PW
         const newPassword = await bcrypt.hash(args.password, 10);
-        console.log(newPassword);
-        // 5. save new pw to user and remove old resetToken fields
+        // 4. save new pw to user and remove old resetToken fields
         const userUpdate = { password: newPassword, resetToken: '', resetTokenExpiry: ''};
         const updatedResponse = await fetch(`${process.env.BASE_URL}/users/${user.id}`, {
             method: 'PUT',
             body:  JSON.stringify(userUpdate)
         });
         const updatedUser = await handleResponse(updatedResponse);
-        // 6. Generate JWT
+        // 5. Generate JWT
         const token = jwt.sign({userId: updatedUser.id }, process.env.APP_SECRET);
-        // 7. set the jwt cookie
+        // 6. set the jwt cookie
         setCookie(ctx, token, (1000 * 60 * 60 * 24)); //1 day cookie
-        // 8. return the new user
+        // 7. return the new user
         return updatedUser;
     }
     };
