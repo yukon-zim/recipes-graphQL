@@ -18,11 +18,7 @@ const UserMutation = {
         }
         // 2. check if pw is correct
         const valid = await bcrypt.compare(password, user.password);
-        console.log(valid);
-        console.log(user.password);
         if (!valid) {
-            console.log(valid);
-            console.log(password);
             throw new Error('Invalid Password!')
         }
         // 3. generate jwt token

@@ -7,8 +7,9 @@ const Query = {
         let recipes;
         if (!args.searchTerm) {
             recipes = await fetch(`${process.env.BASE_URL}/recipes`);
+        } else {
+            recipes = await fetch(`${process.env.BASE_URL}/recipes?searchTerm=${args.searchTerm}`);
         }
-        recipes = await fetch(`${process.env.BASE_URL}/recipes?searchTerm=${args.searchTerm}`);
         return handleResponse(recipes);
     },
     recipe: async (parent, args) => {
@@ -36,7 +37,7 @@ const Query = {
         }
         const currentUser = await fetch(`${process.env.BASE_URL}/users/${ctx.request.userId}`);
         return handleResponse(currentUser);
-}
+    }
 };
 
 module.exports = Query;
