@@ -36,6 +36,10 @@ const Query = {
             return null;
         }
         const currentUser = await fetch(`${process.env.BASE_URL}/users/${ctx.request.userId}`);
+        // if no user is found (ie if logged-in user has been deleted from db), return null in order to prevent render errors in frontend
+        if (currentUser.status === 404) {
+            return null;
+        }
         return handleResponse(currentUser);
     }
 };
