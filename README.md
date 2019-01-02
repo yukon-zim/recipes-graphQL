@@ -11,3 +11,6 @@ MAIL_HOST
 MAIL_PORT
 MAIL_USER
 MAIL_PASS
+
+Restricting user creation without using ecaptcha can be implemented by providing test users with a login code:
+SIGNUP_SECRET

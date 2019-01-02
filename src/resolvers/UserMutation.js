@@ -38,6 +38,11 @@ const UserMutation = {
         if(args.password.length < 6) {
             throw new Error(`PW should be at least 6 characters`);
         }
+        // check their secret signup code
+        // todo: remove field from resolver, schema and frontend mutation when ecaptcha is implemented
+        if(args.signupCode !== process.env.SIGNUP_SECRET) {
+            throw new Error(`Incorrect signup code`);
+        }
         // hash their PW
         const password = await bcrypt.hash(args.password, 10);
         // complete new user request w/ back-end info
