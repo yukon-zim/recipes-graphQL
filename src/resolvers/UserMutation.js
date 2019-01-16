@@ -78,7 +78,7 @@ const UserMutation = {
         const randomBytesPromisified = promisify(randomBytes);
         const resetToken = (await randomBytesPromisified(20)).toString('hex');
         const resetTokenExpiry = Date.now() + 3600000; // 1 hr from now
-        const userUpdate = { resetToken, resetTokenExpiry, email: user.email};
+        const userUpdate = { resetToken, resetTokenExpiry };
         const updateResponse = await fetch(`${process.env.BASE_URL}/users/${user.id}`, {
             method: 'PUT',
             body:  JSON.stringify(userUpdate)
