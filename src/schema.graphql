@@ -26,7 +26,6 @@ type SuccessMessage {
 type Query {
     recipes(searchTerm: String): [Recipe]!
     recipe(id: ID!): Recipe
-    users: [User]!
     userById(id: ID!): User
     userByEmail(email: String!): User
     whoAmI: User
