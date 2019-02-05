@@ -16,10 +16,6 @@ const Query = {
         const recipe = await fetch(`${process.env.BASE_URL}/recipes/${args.id}`);
         return handleResponse(recipe);
     },
-    users: async (parent, args) => {
-        const users = await fetch(`${process.env.BASE_URL}/users`);
-        return handleResponse(users);
-    },
     userById: async (parent, args) => {
         const user = await fetch(`${process.env.BASE_URL}/users/${args.id}`);
         return handleResponse(user);
