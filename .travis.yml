@@ -5,15 +5,16 @@ addons:
 deploy:
   provider: script
   skip_cleanup: true
-  script:
-    rsync -qazr --delete-after ./ bitnami@3.16.189.124:~/projects/recipes-graphQL/;
+  script: rsync -qazr --delete-after ./ bitnami@3.16.189.124:~/projects/recipes-graphQL/;
     ssh bitnami@3.16.189.124 "cp -r ~/env/recipes-graphQL/* ~/projects/recipes-graphQL/";
-    ssh bitnami@3.16.189.124 "cd ~/projects/recipes-graphQL && npm install";
-    ssh bitnami@3.16.189.124 "forever restart gql"
+    ssh bitnami@3.16.189.124 "cd ~/projects/recipes-graphQL && npm install"; ssh bitnami@3.16.189.124
+    "forever restart gql"
   on:
     branch: master
 before_deploy:
-- openssl aes-256-cbc -K $encrypted_a71738f58a39_key -iv $encrypted_a71738f58a39_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+- openssl aes-256-cbc -K $encrypted_1d0fbeba983a_key -iv $encrypted_1d0fbeba983a_iv -in deploy_rsa.enc -out deploy_rsa -d
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_rsa
 - ssh-add /tmp/deploy_rsa
+
+
